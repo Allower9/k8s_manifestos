@@ -1,13 +1,16 @@
-### по тегам ( для 1 все файлы только с -1.yaml )
-##### после apply -f 	nginx-config-1.yaml	nginx-pod-1.yaml
 
-##### пробросим порт `kubectl port-forward nginx-pod 9080:80`
-
-<img width="1268" height="318" alt="image" src="https://github.com/user-attachments/assets/8f5c4712-9589-46fd-8f40-26ff38bfe459" />
+##### после apply -f 	PVC.yaml	secret-1.yaml nginx-pod-1.yaml
 
 
-<img width="2014" height="884" alt="image" src="https://github.com/user-attachments/assets/0d626784-97ad-458c-83cd-e60c998cd51a" />
+<img width="1536" height="906" alt="image" src="https://github.com/user-attachments/assets/22e22618-406d-49c5-b736-2d88cf1cf6f2" />
 
+##### Если хотим поменять index.html ( правим наш файл index.html ) 
+` kubectl cp ./index.html nginx-pod:/usr/share/nginx/html/index.html ` 
+
+##### Смотрим через контейнер 
+`kubectl exec nginx-pod -- curl -s -S -u user:password http://localhost`
+
+##### Либо же через `kubectl port-forward nginx-pod 9080:80 > /dev/null 2>&1 & `
 
 ##### удаляем либо по файлу kubectl delete pod nginx-pod ( где pod -  kind: и nginx-pod это метаданные ) 
 ` kind: Pod
