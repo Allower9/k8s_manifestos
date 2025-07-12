@@ -1,3 +1,4 @@
+# Подключите ConfigMap к Pod
 ### по тегам ( для 1 все файлы только с -1.yaml )
 ##### после apply -f 	nginx-config-1.yaml	nginx-pod-1.yaml
 
