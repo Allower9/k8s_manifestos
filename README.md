@@ -62,3 +62,64 @@ spec:
                 name: nginx-service
                 port:
                   number: 80
+```
+##### Ключевые параметры:
+
+**Аннотации (metadata.annotations):**
+
+- `ingress.alb.yc.io/subnets`:
+  - Определяет подсети для создания ALB
+  - Получить ID подсети можно командой:
+    ```bash
+    yc managed-kubernetes cluster list-node-groups \
+        --name <cluster_name> \
+        --format json | jq '.[].node_template.network_interface_specs[].subnet_ids[]'
+    ```
+    *(Требуется установленная утилита `jq`)*
+
+- `ingress.alb.yc.io/external-ipv4-address`:
+  - Значение `auto` - автоматическое назначение внешнего IPv4-адреса
+  - Альтернативно можно указать конкретный IP
+
+- `ingress.alb.yc.io/group-name`:
+  - Произвольное имя группы Ingress (например `my-ingress-group`)
+  - Группирует связанные Ingress-ресурсы
+
+**Спецификация (spec):**
+
+- `rules` - правила маршрутизации:
+  - `host`: Доменное имя для доступа (в примере `my-nginx-ingress.yc-course.ru`)
+  - `http.paths`: Настройки путей:
+    - `path`: URL-путь (`/` - корневой)
+    - `pathType`: Тип сопоставления (`Prefix` или `Exact`)
+    - `backend`: Куда направлять трафик:
+      - `service.name`: Имя сервиса (`nginx-service`)
+      - `service.port.number`: Порт сервиса (`80`)
+
+**Важные примечания:**
+1. Все аннотации обязательны для работы ALB в Yandex Cloud
+2. Для HTTPS нужно дополнительно настроить:
+   - Сертификат в Certificate Manager
+   - Аннотацию `ingress.alb.yc.io/security-groups`
+3. Для доступа из интернета требуется:
+   - Публичный IP (автоматически назначается при `auto`)
+   - Правила firewall в облачной сети
+
+Убедитесь, что Ingress-контроллер создан. Для этого выполните команду и проверьте, что в поле ADDRESS в выводе команды появилось значение:
+
+##### kubectl -n nginx-with-svc get ingress 
+
+##### $ kubectl -n nginx-with-svc get ingress
+##### NAME            CLASS    HOSTS                           ADDRESS           PORTS   AGE
+##### nginx-ingress   <none>   my-nginx-ingress.yc-course.ru   158.160.176.243   80      12m 
+##### 3️⃣ В рамках данного урока мы не используем реальное доменное имя, добавьте в HOSTS-файл запись для созданного Ingress:
+##### 158.160.176.243 my-nginx-ingress.yc-course.ru 
+##### 4️⃣ Откройте в браузере страницу http://my-nginx-ingress.yc-course.ru/. Вы должны увидеть следующее содержимое:
+##### Welcome to Nginx!
+##### If you see this page, the Nginx web server is successfully configured and basic auth is in use.
+
+##### Learn more about deploying and managing applications with Kubernetes in our comprehensive Kubernetes course.
+
+##### Pod IP: nginx-deployment-59bdf598c7-9ltxc 
+#####Если обновлять страницу, название Pod будет меняться, так как сервис отправляет запросы в разные Pods.
+##### Вы создали самый простой Ingress для маршрутизации трафика к вашему приложению. Подробнее с различными типами сервисов и настройкой Ingress вы познакомитесь в следующей теме.
