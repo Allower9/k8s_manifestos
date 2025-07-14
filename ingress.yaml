@@ -4,7 +4,7 @@ metadata:
   name: alb-demo-tls
   namespace: test-app
   annotations:
-    ingress.alb.yc.io/subnets: fl8go6mg89p92ks1i3i7
+    ingress.alb.yc.io/subnets: epd8jllh2bd4fcp9lrh1
     ingress.alb.yc.io/external-ipv4-address: auto
     ingress.alb.yc.io/group-name: ingress-tls
 spec:
